@@ -1,0 +1,145 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
+
+import '../../providers/history_provider.dart';
+import '../../services/print_layout_service.dart';
+
+const _kColor = Color(0xFF059669);
+
+class LetterSizeScreen extends StatefulWidget {
+  const LetterSizeScreen({super.key});
+
+  @override
+  State<LetterSizeScreen> createState() => _LetterSizeScreenState();
+}
+
+class _LetterSizeScreenState extends State<LetterSizeScreen> {
+  String? _imagePath;
+  double _marginMm = 10.0;
+  bool _autoCenter = true;
+  bool _fitToPage  = false;
+  bool _exporting  = false;
+
+  Future<void> _pickImage() async {
+    final x = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 90);
+    if (x != null) setState(() => _imagePath = x.path);
+  }
+
+  Future<void> _export() async {
+    if (_imagePath == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Please import an image first')));
+      return;
+    }
+    setState(() => _exporting = true);
+    try {
+      final imageBytes = await File(_imagePath!).readAsBytes();
+      final pdfBytes = await PrintLayoutService.buildSingleImagePdf(
+        imageBytes: imageBytes,
+        paper: PaperSize.letter,
+        marginMm: _marginMm,
+        autoCenter: _autoCenter,
+        fitToPage: _fitToPage,
+      );
+      final dir  = await getTemporaryDirectory();
+      final ts   = DateTime.now().millisecondsSinceEpoch;
+      final file = File('${dir.path}/LetterLayout_$ts.pdf');
+      await file.writeAsBytes(pdfBytes);
+      await SharePlus.instance.share(ShareParams(files: [XFile(file.path)], subject: 'Letter Size Layout'));
+      if (!mounted) return;
+      context.read<HistoryProvider>().recordUsage(
+        toolId: 'letter-size', toolName: 'Letter Size', category: 'Print Tools',
+      );
+    } catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Export failed: $e')));
+    } finally {
+      if (mounted) setState(() => _exporting = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs    = theme.colorScheme;
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Letter Size'), backgroundColor: cs.surface),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          _lbl(theme, cs, 'IMAGE'),
+          const SizedBox(height: 8),
+          _imagePath == null
+              ? OutlinedButton.icon(
+                  onPressed: _pickImage,
+                  icon: const Icon(Icons.add_photo_alternate_outlined),
+                  label: const Text('Import Image'),
+                  style: OutlinedButton.styleFrom(
+                      foregroundColor: _kColor, side: const BorderSide(color: _kColor),
+                      padding: const EdgeInsets.symmetric(vertical: 14)))
+              : Stack(children: [
+                  ClipRRect(borderRadius: BorderRadius.circular(10),
+                      child: Image.file(File(_imagePath!),
+                          width: double.infinity, height: 180, fit: BoxFit.cover)),
+                  Positioned(top: 8, right: 8,
+                    child: GestureDetector(onTap: _pickImage,
+                      child: Container(padding: const EdgeInsets.all(6),
+                          decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
+                          child: const Icon(Icons.edit, color: Colors.white, size: 16)))),
+                ]),
+          const SizedBox(height: 16),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(children: [
+                Icon(Icons.note_outlined, color: _kColor, size: 28),
+                const SizedBox(width: 12),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('Letter Paper', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                  Text('216 × 279 mm  •  US Letter',
+                      style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurface.withAlpha(140))),
+                ]),
+              ]),
+            ),
+          ),
+          const SizedBox(height: 16),
+          _lbl(theme, cs, 'MARGIN: ${_marginMm.toInt()} mm'),
+          Slider(value: _marginMm, min: 5, max: 30, divisions: 25, activeColor: _kColor,
+              onChanged: (v) => setState(() => _marginMm = v)),
+          const SizedBox(height: 8),
+          SwitchListTile(
+            value: _autoCenter, onChanged: (v) => setState(() { _autoCenter = v; if (v) _fitToPage = false; }),
+            title: const Text('Auto Center'), activeColor: _kColor, contentPadding: EdgeInsets.zero,
+          ),
+          SwitchListTile(
+            value: _fitToPage, onChanged: (v) => setState(() { _fitToPage = v; if (v) _autoCenter = false; }),
+            title: const Text('Fit to Page'), activeColor: _kColor, contentPadding: EdgeInsets.zero,
+          ),
+          const SizedBox(height: 16),
+          _lbl(theme, cs, 'EXPORT'),
+          const SizedBox(height: 8),
+          _exporting
+              ? const Center(child: CircularProgressIndicator())
+              : Wrap(spacing: 8, runSpacing: 8, children: [
+                  _ebtn('Generate PDF', const Color(0xFFDC2626), Icons.picture_as_pdf_outlined, _export),
+                  _ebtn('Share', const Color(0xFF6366F1), Icons.share_outlined, _export),
+                ]),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
+  Widget _lbl(ThemeData t, ColorScheme cs, String s) => Text(s,
+      style: t.textTheme.labelSmall?.copyWith(color: cs.onSurface.withAlpha(160), letterSpacing: 0.8));
+
+  Widget _ebtn(String l, Color c, IconData icon, VoidCallback cb) =>
+      ElevatedButton.icon(onPressed: cb, icon: Icon(icon, size: 16), label: Text(l),
+          style: ElevatedButton.styleFrom(backgroundColor: c, foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))));
+}

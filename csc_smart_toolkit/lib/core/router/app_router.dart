@@ -7,6 +7,23 @@ import '../../screens/favorites/favorites_screen.dart';
 import '../../screens/history/history_screen.dart';
 import '../../screens/settings/settings_screen.dart';
 import '../../widgets/common/app_shell.dart';
+// ID Card Tools
+import '../../screens/id_card_tools/id_card_tools_screen.dart';
+import '../../screens/id_card_tools/student_id_screen.dart';
+import '../../screens/id_card_tools/employee_id_screen.dart';
+import '../../screens/id_card_tools/visitor_id_screen.dart';
+import '../../screens/id_card_tools/qr_id_screen.dart';
+import '../../screens/id_card_tools/barcode_id_screen.dart';
+// Print Tools
+import '../../screens/print_tools/print_tools_screen.dart';
+import '../../screens/print_tools/a4_layout_screen.dart';
+import '../../screens/print_tools/legal_size_screen.dart';
+import '../../screens/print_tools/letter_size_screen.dart';
+import '../../screens/print_tools/photo_paper_screen.dart';
+import '../../screens/print_tools/passport_sheet_screen.dart';
+import '../../screens/print_tools/multiple_copies_screen.dart';
+import '../../screens/print_tools/auto_center_screen.dart';
+import '../../screens/print_tools/margin_control_screen.dart';
 // QR Tools
 import '../../screens/qr_tools/qr_tools_screen.dart';
 import '../../screens/qr_tools/qr_generator_screen.dart';
@@ -727,6 +744,95 @@ final GoRouter appRouter = GoRouter(
                   const NoTransitionPage(child: OCRScreen()),
             ),
           ],
+        ),
+      ],
+    ),
+
+    // ── ID Card Tools ─────────────────────────────────────────────────────
+    GoRoute(
+      path: '/id-card-tools',
+      pageBuilder: (_, __) =>
+          const NoTransitionPage(child: IDCardToolsScreen()),
+      routes: [
+        GoRoute(
+          path: 'student',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: StudentIdScreen()),
+        ),
+        GoRoute(
+          path: 'employee',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: EmployeeIdScreen()),
+        ),
+        GoRoute(
+          path: 'visitor',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: VisitorIdScreen()),
+        ),
+        GoRoute(
+          path: 'qr-id',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: QrIdScreen()),
+        ),
+        GoRoute(
+          path: 'barcode-id',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: BarcodeIdScreen()),
+        ),
+        // Legacy route aliases from Expo
+        GoRoute(
+          path: 'custom',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: StudentIdScreen()),
+        ),
+      ],
+    ),
+
+    // ── Print Tools ────────────────────────────────────────────────────────
+    GoRoute(
+      path: '/print-tools',
+      pageBuilder: (_, __) =>
+          const NoTransitionPage(child: PrintToolsScreen()),
+      routes: [
+        GoRoute(
+          path: 'a4-layout',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: A4LayoutScreen()),
+        ),
+        GoRoute(
+          path: 'legal-size',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: LegalSizeScreen()),
+        ),
+        GoRoute(
+          path: 'letter-size',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: LetterSizeScreen()),
+        ),
+        GoRoute(
+          path: 'photo-paper',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: PhotoPaperScreen()),
+        ),
+        GoRoute(
+          path: 'passport-sheet',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: PassportSheetScreen()),
+        ),
+        GoRoute(
+          path: 'multiple-copies',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: MultipleCopiesScreen()),
+        ),
+        GoRoute(
+          path: 'auto-center',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: AutoCenterScreen()),
+        ),
+        GoRoute(
+          path: 'margin-control',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: MarginControlScreen()),
         ),
       ],
     ),
