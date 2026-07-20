@@ -162,9 +162,9 @@ class SettingsScreen extends StatelessWidget {
                 leading: const _IconBox(
                     icon: Icons.folder_outlined, color: Color(0xFF059669)),
                 title: const Text('Default Folder'),
-                subtitle: const Text('Downloads'),
+                subtitle: Text(settingsProvider.defaultOutputFolder),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () {},
+                onTap: () => _showFolderDialog(context, settingsProvider),
               ),
             ]),
           ),
@@ -341,6 +341,41 @@ class SettingsScreen extends StatelessWidget {
               Text(size),
               const Spacer(),
               if (provider.printSize == size)
+                Icon(Icons.check,
+                    color: Theme.of(context).colorScheme.primary, size: 18),
+            ]),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  void _showFolderDialog(BuildContext context, SettingsProvider provider) {
+    const folders = ['Downloads', 'Pictures', 'Documents'];
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: const Text('Default Output Folder'),
+        children: folders.map((folder) {
+          return SimpleDialogOption(
+            onPressed: () {
+              provider.setDefaultOutputFolder(folder);
+              Navigator.of(ctx).pop();
+            },
+            child: Row(children: [
+              Icon(
+                folder == 'Downloads'
+                    ? Icons.download_outlined
+                    : folder == 'Pictures'
+                        ? Icons.photo_outlined
+                        : Icons.description_outlined,
+                size: 20,
+                color: const Color(0xFF059669),
+              ),
+              const SizedBox(width: 12),
+              Text(folder),
+              const Spacer(),
+              if (provider.defaultOutputFolder == folder)
                 Icon(Icons.check,
                     color: Theme.of(context).colorScheme.primary, size: 18),
             ]),

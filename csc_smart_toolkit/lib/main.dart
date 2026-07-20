@@ -8,11 +8,18 @@ import 'providers/favorites_provider.dart';
 import 'providers/history_provider.dart';
 import 'providers/search_provider.dart';
 import 'providers/settings_provider.dart';
+import 'services/database_service.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setPreferredOrientations([
+  // Warm up the SQLite database on startup to avoid first-use delay.
+  // Errors are caught so a DB failure never prevents the app from launching.
+  try {
+    await DatabaseService.db;
+  } catch (_) {}
+
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);

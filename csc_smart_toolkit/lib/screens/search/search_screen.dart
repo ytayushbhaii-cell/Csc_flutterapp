@@ -86,7 +86,7 @@ class _SearchScreenState extends State<SearchScreen> {
               },
               onRemove: searchProvider.removeHistoryItem,
               onClearAll: searchProvider.clearHistory,
-              recentTools: allTools.take(8).toList(),
+              recentTools: allTools,
               favProvider: favProvider,
             ),
     );
@@ -266,7 +266,7 @@ class _HistoryList extends StatelessWidget {
           ),
           const SizedBox(height: 20),
         ],
-        Text('All Tools',
+        Text('All Tools (${recentTools.length})',
             style: Theme.of(context).textTheme.titleSmall
                 ?.copyWith(fontWeight: FontWeight.w700)),
         const SizedBox(height: 10),
