@@ -45,6 +45,17 @@ dependencies:
   # Offline OCR
   google_mlkit_text_recognition: ^0.13.1
 
+  # ── QR & Barcode ──────────────────────────────────────────────────────────
+  # QR code generation
+  qr_flutter: ^4.1.0
+  # Camera-based QR & barcode scanning (offline, ML Kit bundled)
+  mobile_scanner: ^6.0.0
+  # 1-D barcode rendering widget
+  barcode_widget: ^2.0.3
+
+  # ── Signature drawing canvas ──────────────────────────────────────────────
+  signature: ^5.4.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

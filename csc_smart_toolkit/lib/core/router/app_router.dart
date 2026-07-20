@@ -7,6 +7,25 @@ import '../../screens/favorites/favorites_screen.dart';
 import '../../screens/history/history_screen.dart';
 import '../../screens/settings/settings_screen.dart';
 import '../../widgets/common/app_shell.dart';
+// QR Tools
+import '../../screens/qr_tools/qr_tools_screen.dart';
+import '../../screens/qr_tools/qr_generator_screen.dart';
+import '../../screens/qr_tools/qr_scanner_screen.dart';
+// Barcode Tools
+import '../../screens/barcode_tools/barcode_tools_screen.dart';
+import '../../screens/barcode_tools/barcode_generator_screen.dart';
+import '../../screens/barcode_tools/barcode_scanner_screen.dart';
+// Signature Tools
+import '../../screens/signature_tools/signature_tools_screen.dart';
+import '../../screens/signature_tools/transparent_signature_screen.dart';
+import '../../screens/signature_tools/digital_signature_screen.dart';
+import '../../screens/signature_tools/png_signature_screen.dart';
+// Stamp Maker
+import '../../screens/stamp_maker/stamp_maker_screen.dart';
+import '../../screens/stamp_maker/round_stamp_screen.dart';
+import '../../screens/stamp_maker/square_stamp_screen.dart';
+import '../../screens/stamp_maker/company_stamp_screen.dart';
+import '../../screens/stamp_maker/csc_stamp_screen.dart';
 // Photo Tools
 import '../../screens/photo_tools/photo_tools_screen.dart';
 import '../../screens/photo_tools/background_remove_screen.dart';
@@ -118,6 +137,108 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/search',
       pageBuilder: (_, __) => const NoTransitionPage(child: SearchScreen()),
+    ),
+
+    // ── QR Tools ──────────────────────────────────────────────────────────
+    GoRoute(
+      path: '/qr-tools',
+      pageBuilder: (_, __) => const NoTransitionPage(child: QRToolsScreen()),
+      routes: [
+        GoRoute(
+          path: 'generator',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: QRGeneratorScreen()),
+        ),
+        GoRoute(
+          path: 'scanner',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: QRScannerScreen()),
+        ),
+      ],
+    ),
+
+    // ── Barcode Tools ─────────────────────────────────────────────────────
+    GoRoute(
+      path: '/barcode-tools',
+      pageBuilder: (_, __) =>
+          const NoTransitionPage(child: BarcodeToolsScreen()),
+      routes: [
+        GoRoute(
+          path: 'generator',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: BarcodeGeneratorScreen()),
+        ),
+        GoRoute(
+          path: 'scanner',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: BarcodeScannerScreen()),
+        ),
+      ],
+    ),
+
+    // ── Signature Tools ───────────────────────────────────────────────────
+    GoRoute(
+      path: '/signature-tools',
+      pageBuilder: (_, __) =>
+          const NoTransitionPage(child: SignatureToolsScreen()),
+      routes: [
+        GoRoute(
+          path: 'transparent',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: TransparentSignatureScreen()),
+        ),
+        GoRoute(
+          path: 'digital',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: DigitalSignatureScreen()),
+        ),
+        GoRoute(
+          path: 'png',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: PngSignatureScreen()),
+        ),
+        // Legacy route from Expo 'maker'
+        GoRoute(
+          path: 'maker',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: TransparentSignatureScreen()),
+        ),
+        // Signature background remove = transparent bg signature
+        GoRoute(
+          path: 'bg-remove',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: TransparentSignatureScreen()),
+        ),
+      ],
+    ),
+
+    // ── Stamp Maker ───────────────────────────────────────────────────────
+    GoRoute(
+      path: '/stamp-maker',
+      pageBuilder: (_, __) =>
+          const NoTransitionPage(child: StampMakerScreen()),
+      routes: [
+        GoRoute(
+          path: 'round-stamp',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: RoundStampScreen()),
+        ),
+        GoRoute(
+          path: 'square-stamp',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: SquareStampScreen()),
+        ),
+        GoRoute(
+          path: 'company-stamp',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: CompanyStampScreen()),
+        ),
+        GoRoute(
+          path: 'csc-stamp',
+          pageBuilder: (_, __) =>
+              const NoTransitionPage(child: CscStampScreen()),
+        ),
+      ],
     ),
 
     // ── Photo Tools ───────────────────────────────────────────────────────
