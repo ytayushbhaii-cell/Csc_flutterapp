@@ -56,6 +56,9 @@ dependencies:
   # ── Signature drawing canvas ──────────────────────────────────────────────
   signature: ^5.4.0
 
+  # ── ZIP archive ───────────────────────────────────────────────────────────
+  archive: ^3.6.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
