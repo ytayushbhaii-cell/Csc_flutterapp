@@ -1,0 +1,26 @@
+# Exclude files not needed for EAS native builds
+# ONNX models are web-only (used by onnxruntime-web in browser)
+public/models/
+
+# Expo web dist output
+dist/
+
+# Node modules (EAS installs fresh)
+node_modules/
+
+# Git
+.git/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+nohup.out
+
+# Test files
+__tests__/
+
+# Local dev files
+.expo/
